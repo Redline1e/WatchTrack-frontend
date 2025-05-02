@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { api } from "@/lib/api";
 
 interface Genre {
@@ -27,9 +28,7 @@ export default function ContentSection() {
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formYear, setFormYear] = useState<number | "">("");
-  const [formType, setFormType] = useState<"MOVIE" | "SERIES" | "ANIME">(
-    "MOVIE"
-  );
+  const [formType, setFormType] = useState<"MOVIE" | "SERIES" | "ANIME">("MOVIE");
   const [formGenres, setFormGenres] = useState<number[]>([]);
   const [formPhoto, setFormPhoto] = useState<File | null>(null);
 
@@ -53,7 +52,7 @@ export default function ContentSection() {
     setFormPhoto(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let filmId: number;
 
@@ -93,7 +92,7 @@ export default function ContentSection() {
   const startEdit = (f: Film) => {
     setEditingId(f.id);
     setFormTitle(f.title);
-    setFormDescription(f.description || "");
+    setFormDescription(f.description ?? "");
     setFormYear(f.releaseYear ?? "");
     setFormType(f.type);
     setFormGenres(f.genres.map((g) => g.id));
@@ -118,6 +117,7 @@ export default function ContentSection() {
         <h2 className="text-xl font-semibold">
           {editingId ? "Change film" : "Add new film"}
         </h2>
+
         <input
           type="text"
           value={formTitle}
@@ -126,6 +126,7 @@ export default function ContentSection() {
           required
           className="w-full p-2 border rounded"
         />
+
         <textarea
           value={formDescription}
           onChange={(e) => setFormDescription(e.target.value)}
@@ -133,6 +134,7 @@ export default function ContentSection() {
           className="w-full p-2 border rounded"
           rows={3}
         />
+
         <input
           type="number"
           value={formYear}
@@ -140,20 +142,26 @@ export default function ContentSection() {
           placeholder="Release Year"
           className="w-full p-2 border rounded"
         />
+
         <select
           value={formType}
-          onChange={(e) => setFormType(e.target.value as any)}
+          onChange={(e) =>
+            setFormType(e.target.value as "MOVIE" | "SERIES" | "ANIME")
+          }
           className="w-full p-2 border rounded"
         >
           <option value="MOVIE">Movie</option>
           <option value="SERIES">Series</option>
           <option value="ANIME">Anime</option>
         </select>
+
         <select
           multiple
           value={formGenres.map(String)}
           onChange={(e) =>
-            setFormGenres(Array.from(e.target.selectedOptions, (o) => +o.value))
+            setFormGenres(
+              Array.from(e.target.selectedOptions, (o) => +o.value)
+            )
           }
           className="w-full p-2 border rounded h-24"
         >
@@ -163,12 +171,14 @@ export default function ContentSection() {
             </option>
           ))}
         </select>
+
         <input
           type="file"
           accept="image/*"
           onChange={(e) => setFormPhoto(e.target.files?.[0] ?? null)}
           className="w-full"
         />
+
         <div className="flex space-x-2">
           <button
             type="submit"
@@ -207,15 +217,15 @@ export default function ContentSection() {
               <td className="p-2 border">{f.title}</td>
               <td className="p-2 border">{f.releaseYear ?? "—"}</td>
               <td className="p-2 border">{f.type}</td>
-              <td className="p-2 border">
-                {f.genres.map((g) => g.name).join(", ")}
-              </td>
+              <td className="p-2 border">{f.genres.map((g) => g.name).join(", ")}</td>
               <td className="p-2 border">
                 {f.photoUrl ? (
-                  <img
+                  <Image
                     src={f.photoUrl}
                     alt={f.title}
-                    className="h-12 w-12 object-cover rounded"
+                    width={48}
+                    height={48}
+                    className="object-cover rounded"
                   />
                 ) : (
                   "—"

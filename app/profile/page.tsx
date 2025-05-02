@@ -1,4 +1,3 @@
-// app/profile/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -27,19 +26,18 @@ interface Profile {
 
 export default function ProfilePage() {
   const router = useRouter();
-
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getUserId = () => {
+  const getUserId = (): number | null => {
     const token = localStorage.getItem("token");
     if (!token) return null;
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      return payload.sub as number;
+      return (payload as { sub: number }).sub;
     } catch {
       return null;
     }
@@ -65,15 +63,19 @@ export default function ProfilePage() {
       .finally(() => setLoading(false));
   }, [router]);
 
-  const handleUpdate = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!profile) return;
     setError(null);
     try {
       await api.patch(`/users/${profile.id}`, { name, email });
       setProfile({ ...profile, name, email });
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Error updating profile");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Error updating profile");
+      }
     }
   };
 
@@ -104,7 +106,9 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="p-6 text-center text-red-600">Failed to load profile</div>
+      <div className="p-6 text-center text-red-600">
+        Failed to load profile
+      </div>
     );
   }
 

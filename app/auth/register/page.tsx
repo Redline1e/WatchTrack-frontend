@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios, { AxiosError } from "axios";
 import { api } from "@/lib/api";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -19,14 +20,22 @@ export default function RegisterPage() {
     }
   }, [router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
       await api.post("/auth/register", { name, email, password });
       router.replace("/auth/login");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          (err as AxiosError<{ message: string }>).response!.data.message
+        );
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Registration failed");
+      }
     }
   };
 
@@ -49,7 +58,7 @@ export default function RegisterPage() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your Name"
-          className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-200"
+          className="w-full p-3 border rounded focus:ring-2 focus:ring-green-200"
           required
         />
         <input
@@ -57,7 +66,7 @@ export default function RegisterPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-200"
+          className="w-full p-3 border rounded focus:ring-2 focus:ring-green-200"
           required
         />
 
@@ -67,7 +76,7 @@ export default function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-green-200 pr-10"
+            className="w-full p-3 border rounded focus:ring-2 focus:ring-green-200 pr-10"
             required
           />
           <button

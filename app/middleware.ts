@@ -8,6 +8,12 @@ const PUBLIC_PATHS = [
   "/_next/",
 ];
 
+interface JwtPayload {
+  sub: number;
+  role: string;
+  exp?: number;
+}
+
 export function middleware(req: NextRequest) {
   const { cookies, nextUrl } = req;
   const { pathname } = nextUrl;
@@ -21,14 +27,23 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  let payload: any = {};
+  let payload: JwtPayload | null = null;
   try {
-    payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+    const decoded = JSON.parse(
+      Buffer.from(token.split(".")[1], "base64").toString()
+    );
+    if (
+      typeof decoded === "object" &&
+      decoded !== null &&
+      "role" in decoded
+    ) {
+      payload = decoded as JwtPayload;
+    }
   } catch {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (pathname.startsWith("/admin") && payload.role !== "ADMIN") {
+  if (pathname.startsWith("/admin") && payload?.role !== "ADMIN") {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
@@ -36,7 +51,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|favicon\\.ico).*)",
-  ],
+  matcher: ["/((?!_next|favicon\\.ico).*)"],
 };

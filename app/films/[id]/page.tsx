@@ -1,18 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useFilm } from "@/hooks/useFilms";
-import { useReviews } from "@/hooks/useReviews";
+import { useReviews, Review } from "@/hooks/useReviews";
 import ReviewForm from "@/components/ReviewForm";
 import WatchButton from "@/components/WatchButton";
-import { Calendar, Star, MessageCircle } from "lucide-react";
+import { Calendar, MessageCircle, Star } from "lucide-react";
 
 export default function FilmDetailPage() {
   const { id } = useParams();
   const filmId = Number(id);
 
   const { data: film, isLoading: filmLoading } = useFilm(filmId);
-  const { data: reviews, isLoading: reviewsLoading } = useReviews(filmId);
+  const { data: reviews, isLoading: reviewsLoading } =
+    useReviews<Review>(filmId);
 
   if (filmLoading) {
     return (
@@ -35,10 +37,11 @@ export default function FilmDetailPage() {
         <div className="flex-shrink-0 w-full sm:w-2/3 md:w-1/3 lg:w-1/4 max-w-xs">
           <div className="relative pb-[150%] rounded-lg overflow-hidden shadow-md">
             {film.photoUrl ? (
-              <img
+              <Image
                 src={film.photoUrl}
                 alt={film.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <div className="absolute inset-0 bg-gray-200" />
@@ -81,21 +84,18 @@ export default function FilmDetailPage() {
             <p className="text-gray-500">Loading comments…</p>
           ) : reviews && reviews.length > 0 ? (
             <ul className="space-y-4">
-              {reviews.map((rev: any) => (
+              {reviews.map((rev) => (
                 <li
                   key={rev.id}
                   className="p-4 bg-white rounded-lg shadow-sm border"
                 >
                   <p className="flex items-center font-medium text-indigo-600">
-                    <Star className="h-4 w-4 mr-1 text-yellow-400" />{" "}
+                    <Star className="h-4 w-4 mr-1 text-yellow-400" />
                     {rev.rating} / 10
                   </p>
                   {rev.comment && (
-                    <div className="mt-2 flex flex-wrap items-start gap-1 text-gray-700 min-w-0 overflow-hidden">
-                      <span className="break-words">{rev.comment}</span>
-                    </div>
+                    <div className="mt-2 text-gray-700">{rev.comment}</div>
                   )}
-
                   <p className="mt-2 text-xs text-gray-500">
                     by User #{rev.userId}
                   </p>

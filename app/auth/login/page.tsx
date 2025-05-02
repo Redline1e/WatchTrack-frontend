@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios, { AxiosError } from "axios";
 import { api } from "@/lib/api";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -18,15 +19,23 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
       const res = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.access_token);
       router.replace("/films");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid credentials");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response) {
+        setError(
+          (err as AxiosError<{ message: string }>).response!.data.message
+        );
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Invalid credentials");
+      }
     }
   };
 
@@ -49,7 +58,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
-          className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-200"
+          className="w-full p-3 border rounded focus:ring-2 focus:ring-indigo-200"
           required
         />
 
@@ -59,7 +68,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-200 pr-10"
+            className="w-full p-3 border rounded focus:ring-2 focus:ring-indigo-200 pr-10"
             required
           />
           <button

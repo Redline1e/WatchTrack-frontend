@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FC } from "react";
+import React, { FC } from "react";
+import Image from "next/image";
 import { Star, Calendar, Tag } from "lucide-react";
 
 export interface Genre {
@@ -29,11 +30,12 @@ const FilmCard: FC<FilmCardProps> = ({ film }) => {
       className="block bg-gray-800 text-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
     >
       {film.photoUrl ? (
-        <div className="w-full aspect-[11/9] overflow-hidden">
-          <img
+        <div className="w-full aspect-[11/9] relative">
+          <Image
             src={film.photoUrl}
             alt={film.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         </div>
       ) : (

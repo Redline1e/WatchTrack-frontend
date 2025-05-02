@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import { WatchStatus } from "@/types/watch-status";
 
 export default function WatchlistPage() {
-  const { data: items, isLoading, error, add, updateStatus } = useWatchlist();
+  const { data: items, isLoading, error } = useWatchlist();
 
   return (
     <div className="flex flex-col min-h-screen">
