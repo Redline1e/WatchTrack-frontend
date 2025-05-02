@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**WatchTrack** is a full-stack movie & series tracking application built with Next.js, NestJS, and Prisma. The application is deployed on Railway, ensuring reliable and high-performance hosting.
 
-## Getting Started
+## Live Demo
 
-First, run the development server:
+Check out the live demo: [WatchTrack](https://watchtrack-frontend-production.up.railway.app/films)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Technologies Used
+
+- **NestJS**
+- **Prisma ORM**
+- **Zod (validation)**
+- **JWT Auth via NestJS Guards**
+- **NeonDB**
+- **PostgreSQL**
+
+
+
+## Project Structure
+```
+├── backend/               # NestJS + Prisma API
+│   ├── src/
+│   │   ├── auth/          # Authentication module
+│   │   ├── films/         # Film endpoints
+│   │   ├── genres/        # Genre endpoints
+│   │   ├── health/        # Health-check endpoints
+│   │   ├── prisma/        # Prisma client
+│   │   ├── reviews/       # Review endpoints
+│   │   ├── users/         # User endpoints
+│   │   └── watch-items/   # Watchlist endpoints
+│   ├── prisma/            # Database migrations
+│   ├── uploads/           # Uploaded assets
+│   ├── test/              # Unit & E2E tests
+│   ├── .env               # Environment variables
+│   ├── package.json
+│   └── tsconfig.json
+└── README.md              # This file
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+- ✅ User Authentication (JWT)
 
-To learn more about Next.js, take a look at the following resources:
+- 🎬 Film, Genre, Review, and Watchlist management CRUD
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 📁 File Upload for cover images
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🏥 Health Check endpoints for monitoring
 
-## Deploy on Vercel
+- 🔒 Role-based access control for admin routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How to Run
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+1. Clone the repository or download the project files:
+
+    
+bash
+
+    git clone <YOUR_REPO_URL>
+    cd <YOUR_REPO_FOLDER>
+
+2. Setup
+
+
+bash
+
+    cp .env.example .env
+    # Edit .env → set DATABASE_URL
+    npm install
+    npx prisma generate
+    npx prisma migrate dev --name init
+    npm run start:dev  # http://localhost:3000
+
+3. Frontend setup
+
+  bash
+  
+      cd ../frontend
+      cp .env.local.example .env.local
+      # Edit .env.local → set NEXT_PUBLIC_API_URL=http://localhost:3000/api
+      npm install
+      npm run dev        # http://localhost:3001/films
+
+
+
+## 📝 Scripts & Commands
+
+| Command                  | Description                     |
+| ------------------------ | ------------------------------- |
+| `npm run dev` (frontend) | Start Next.js dev server (3001) |
+| `npm run dev` (backend)  | Start NestJS dev server (3000)  |
+| `npm run build`          | Build for production            |
+| `npm run start`          | Run production server           |
+| `npx prisma studio`      | Open Prisma Studio (DB GUI)     |
+
+
+
