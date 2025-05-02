@@ -1,99 +1,100 @@
-**WatchTrack** is a full-stack movie & series tracking application built with Next.js, NestJS, and Prisma. The application is deployed on Railway, ensuring reliable and high-performance hosting.
+**🎬 WatchTrack Frontend** is a **Next.js 15** + **React** client for the WatchTrack full‑stack movie & series tracker, consuming a NestJS/Prisma API.  
 
-## Live Demo
+[🌐 Live Demo](https://watchtrack-frontend-production.up.railway.app/films)
 
-Check out the live demo: [WatchTrack](https://watchtrack-frontend-production.up.railway.app/films)
+---
 
-## Technologies Used
+## 🛠️ Technologies Used
 
-- **NestJS**
-- **Prisma ORM**
-- **Zod (validation)**
-- **JWT Auth via NestJS Guards**
-- **NeonDB**
-- **PostgreSQL**
+- **Next.js 15**  
+- **React**  
+- **TypeScript**  
+- **Tailwind CSS**  
+- **TanStack React Query**  
+- **Axios**  
+- **Lucide React** (icons)  
 
+---
 
+## 📁 Project Structure
 
-## Project Structure
-```
-├── backend/               # NestJS + Prisma API
-│   ├── src/
-│   │   ├── auth/          # Authentication module
-│   │   ├── films/         # Film endpoints
-│   │   ├── genres/        # Genre endpoints
-│   │   ├── health/        # Health-check endpoints
-│   │   ├── prisma/        # Prisma client
-│   │   ├── reviews/       # Review endpoints
-│   │   ├── users/         # User endpoints
-│   │   └── watch-items/   # Watchlist endpoints
-│   ├── prisma/            # Database migrations
-│   ├── uploads/           # Uploaded assets
-│   ├── test/              # Unit & E2E tests
-│   ├── .env               # Environment variables
-│   ├── package.json
-│   └── tsconfig.json
-└── README.md              # This file
+```plaintext
+frontend/
+├── app/                      # Next.js App Router: pages & layouts
+│   ├── admin/                # Admin panel (user management)
+│   ├── auth/                 # Login & registration
+│   ├── films/                # Film list & detail routes
+│   ├── profile/              # User profile page
+│   └── watchlist/            # My Watchlist page
+│
+├── components/               # Reusable UI components
+├── hooks/                    # Custom React Query hooks
+│   ├── useAdminUsers.ts
+│   ├── useFilms.ts
+│   ├── useGenres.ts
+│   ├── useReviews.ts
+│   └── useWatchlist.ts
+│
+├── lib/                      # Shared utilities & API client
+│   └── api.ts                # Axios instance
+│
+├── public/                   # Static assets (favicon, images)
+├── types/                    # TypeScript types/interfaces
+│   ├── film.ts
+│   ├── review.ts
+│   ├── role.ts
+│   ├── user.ts
+│   └── watch-status.ts
+│
+├── .env.local                # Environment variables (API URL)
+├── next.config.ts            # Next.js configuration
+├── tailwind.config.ts        # Tailwind CSS configuration
+├── tsconfig.json             # TypeScript configuration
+└── package.json              # Dependencies & scripts
+
 ```
 
 ## ✨ Features
 
+- 🔐 **Protected routes** with client‑side token guard  
+- 🎥 **Film** listing, detail view & cover images  
+- ⭐ **Review** submission & display  
+- 📑 **Watchlist** status (Planned / Watching / Completed)  
+- 🔎 **Search** & **filter** films by genre/year  
+- ⚡ **Data caching** & automatic updates with React Query  
+- 🎨 Fully **responsive** layout via Tailwind CSS  
 
+---
 
-- ✅ User Authentication (JWT)
+## 🚀 Getting Started
 
-- 🎬 Film, Genre, Review, and Watchlist management CRUD
+1. **Copy & configure env**  
+   ```bash
+   cd frontend
+   cp .env.local.example .env.local
+   # edit .env.local → set your API URL:
+   NEXT_PUBLIC_API_URL=http://localhost:3000/api
 
-- 📁 File Upload for cover images
+2. **Install dependencies**  
+   ```bash
+   npm install
 
-- 🏥 Health Check endpoints for monitoring
+3. **Start dev server**  
+   ```bash
+       npm run dev   # → http://localhost:3001/films
 
-- 🔒 Role-based access control for admin routes
-
-## How to Run
-
-
-1. Clone the repository or download the project files:
-
-    
-bash
-
-    git clone <YOUR_REPO_URL>
-    cd <YOUR_REPO_FOLDER>
-
-2. Setup
-
-
-bash
-
-    cp .env.example .env
-    # Edit .env → set DATABASE_URL
-    npm install
-    npx prisma generate
-    npx prisma migrate dev --name init
-    npm run start:dev  # http://localhost:3000
-
-3. Frontend setup
-
-  bash
-  
-      cd ../frontend
-      cp .env.local.example .env.local
-      # Edit .env.local → set NEXT_PUBLIC_API_URL=http://localhost:3000/api
-      npm install
-      npm run dev        # http://localhost:3001/films
-
-
+**Production build:**  
+   ```bash
+        npm run build
+        npm run start
+   ```
 
 ## 📝 Scripts & Commands
 
 | Command                  | Description                     |
 | ------------------------ | ------------------------------- |
-| `npm run dev` (frontend) | Start Next.js dev server (3001) |
-| `npm run dev` (backend)  | Start NestJS dev server (3000)  |
-| `npm run build`          | Build for production            |
-| `npm run start`          | Run production server           |
-| `npx prisma studio`      | Open Prisma Studio (DB GUI)     |
-
-
-
+| npm run dev (frontend) | Start Next.js dev server (3001) |
+| npm run dev (backend)  | Start NestJS dev server (3000)  |
+| npm run build          | Build for production            |
+| npm run start          | Run production server           |
+| npx prisma studio      | Open Prisma Studio (DB GUI)     |
